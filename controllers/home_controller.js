@@ -33,6 +33,3 @@ module.exports.home = async function(req, res) {
        return;
     }
   }
-
-  
-console.log("C1 is connected");

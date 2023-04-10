@@ -12,14 +12,14 @@ module.exports.signUp= function(req, res){
     // if(req.isAuthenticated()){
     //     return res.redirect('/users/profile');
     // }
-    return res.render('user_sign_in',{
+    return res.render('user_sign_up',{
         title: "Codeial | Sign Up"
     })
 }
 
 //render SignIn page
-module.exports.signIn= function(req, res){
-    if(req.isAuthenticated()){
+module.exports.signIn = function (req, res) {
+    if (req.isAuthenticated()) {
         return res.redirect('/users/profile');
     }
     return res.render('user_sign_in',{
@@ -29,33 +29,35 @@ module.exports.signIn= function(req, res){
 
 
 //get the sign up data
-module.exports.create = function(req, res) {
-    if (req.body.password != req.body.confirm_password){
+module.exports.create = async function (req, res) {
+    if (req.isAuthenticated()) {
+
+        return res.redirect('/users/profile')
+    }
+    if (req.body.password != req.body.confirm_password) {
+
         return res.redirect('back');
     }
-
-    User.findOne({email: req.body.email})
-        .then(user => {
-            if(!user) {
-                return User.create(req.body)
-            } else {
-                return Promise.reject('User already exists');
-            }
-        })
-        .then(createdUser => {
+    try {
+        user = await User.findOne({ email: req.body.email });
+        if (!user) {
+            await User.create(req.body);
             return res.redirect('/users/sign-in');
-        })
-        .catch(err => {
-            console.log('Error in signup:', err);
+        } else {
             return res.redirect('back');
-        });
-}
+        }
+
+    } catch (err) {
+        console.log("Error: ", err);
+        return;
+    }
+    }
 
 
 
 
 //sign in and create a section for the user
-module.exports.createSession = function(req, res) {
+module.exports.createSession = function (req, res) {
     return res.redirect('/');
 }
 
