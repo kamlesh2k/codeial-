@@ -24,6 +24,7 @@ module.exports.home = async function(req, res) {
             path: 'user'
           }
         })
+        
       return res.render('home', {
         title: "Codeial I Home",
         posts: posts
